@@ -1,0 +1,75 @@
+# ---- SCALARS ----
+scalar Date
+
+# ---- TYPES ----
+
+type Book {
+    id: ID!
+    title: String!
+    isbn: String!
+    publishedDate: Date
+    synopsis: String
+    author: Author!
+    genre: Genre!
+    createdAt: Date
+}
+
+type Author {
+    id: ID!
+    firstName: String!
+    lastName: String!
+    bio: String
+    books: [Book!]!
+}
+
+type Genre {
+    id: ID!
+    name: String!
+    books: [Book!]!
+}
+
+# ---- QUERIES ----
+
+type Query {
+    # Books
+    books: [Book!]!
+    bookById(id: ID!): Book
+    booksByGenre(genreId: ID!): [Book!]!
+
+    # Authors
+    authors: [Author!]!
+    authorById(id: ID!): Author
+
+    # Genres
+    genres: [Genre!]!
+}
+
+# ---- INPUTS ----
+
+input CreateBookInput {
+    title: String!
+    isbn: String!
+    publishedDate: Date
+    synopsis: String
+    authorId: ID!
+    genreId: ID!
+}
+
+input CreateAuthorInput {
+    firstName: String!
+    lastName: String!
+    bio: String
+}
+
+input CreateGenreInput {
+    name: String!
+}
+
+# ---- MUTATIONS ----
+
+type Mutation {
+    createBook(input: CreateBookInput!): Book!
+    createAuthor(input: CreateAuthorInput!): Author!
+    createGenre(input: CreateGenreInput!): Genre!
+    deleteBook(id: ID!): Boolean!
+}
