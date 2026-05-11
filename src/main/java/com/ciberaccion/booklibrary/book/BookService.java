@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.ciberaccion.booklibrary.author.Author;
 import com.ciberaccion.booklibrary.author.AuthorRepository;
+import com.ciberaccion.booklibrary.exception.AuthorNotFoundException;
 import com.ciberaccion.booklibrary.genre.Genre;
 import com.ciberaccion.booklibrary.genre.GenreRepository;
 
@@ -25,6 +26,7 @@ public class BookService {
     }
 
     public Optional<Book> findById(Long id) {
+        // No lanzamos aquí — el controller decide si es error o null válido
         return bookRepository.findById(id);
     }
 
@@ -34,7 +36,8 @@ public class BookService {
 
     public Book create(CreateBookInput input) {
         Author author = authorRepository.findById(input.authorId())
-                .orElseThrow(() -> new RuntimeException("Author not found: " + input.authorId()));
+                // Después (específico, con clasificación):
+                .orElseThrow(() -> new AuthorNotFoundException(input.authorId()));
 
         Genre genre = genreRepository.findById(input.genreId())
                 .orElseThrow(() -> new RuntimeException("Genre not found: " + input.genreId()));
@@ -65,5 +68,15 @@ public class BookService {
 
     public List<Book> findBooksWithGenres(List<Book> books) {
         return bookRepository.findBooksWithGenres(books);
+    }
+
+    public List<Book> findWithFilters(BookFilterInput filter) {
+        if (filter == null) {
+            return bookRepository.findAll();
+        }
+        return bookRepository.findWithFilters(
+                filter.title(),
+                filter.authorId(),
+                filter.genreId());
     }
 }

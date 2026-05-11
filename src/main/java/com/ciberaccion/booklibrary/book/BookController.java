@@ -23,8 +23,8 @@ public class BookController {
     private final BookService bookService;
 
     @QueryMapping
-    public List<Book> books() {
-        return bookService.findAll();
+    public List<Book> books(@Argument BookFilterInput filter) {
+        return bookService.findWithFilters(filter);
     }
 
     @QueryMapping

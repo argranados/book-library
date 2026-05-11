@@ -32,7 +32,7 @@ type Genre {
 
 type Query {
     # Books
-    books: [Book!]!
+    books(filter: BookFilterInput): [Book!]!   # <- agrega el argumento
     bookById(id: ID!): Book
     booksByGenre(genreId: ID!): [Book!]!
 
@@ -72,4 +72,11 @@ type Mutation {
     createAuthor(input: CreateAuthorInput!): Author!
     createGenre(input: CreateGenreInput!): Genre!
     deleteBook(id: ID!): Boolean!
+}
+
+# Agrega este input al final del archivo
+input BookFilterInput {
+    title: String
+    authorId: ID
+    genreId: ID
 }
