@@ -7,22 +7,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.PrePersist;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.ToString;
 import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.ciberaccion.booklibrary.author.Author;
 import com.ciberaccion.booklibrary.genre.Genre;
@@ -33,8 +28,10 @@ import com.ciberaccion.booklibrary.genre.Genre;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Book {
 
+    @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
