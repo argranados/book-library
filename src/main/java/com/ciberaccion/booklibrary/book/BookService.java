@@ -79,4 +79,42 @@ public class BookService {
                 filter.authorId(),
                 filter.genreId());
     }
+
+    public BooksConnection findWithCursor(Integer first, String after, Integer last, String before) {
+        List<Book> allBooks = bookRepository.findAllOrderedById();
+
+        // Decodificar cursor — usamos el id del libro como cursor en Base64
+        int startIndex = 0;
+        if (after != null) {
+            String decodedId = new String(java.util.Base64.getDecoder().decode(after));
+            Long afterId = Long.parseLong(decodedId);
+            for (int i = 0; i < allBooks.size(); i++) {
+                if (allBooks.get(i).getId().equals(afterId)) {
+                    startIndex = i + 1;
+                    break;
+                }
+            }
+        }
+
+        int pageSize = (first != null) ? first : 10;
+        int endIndex = Math.min(startIndex + pageSize, allBooks.size());
+
+        List<Book> pageBooks = allBooks.subList(startIndex, endIndex);
+
+        List<BooksConnection.BookEdge> edges = pageBooks.stream()
+                .map(book -> new BooksConnection.BookEdge(
+                        book,
+                        java.util.Base64.getEncoder().encodeToString(
+                                book.getId().toString().getBytes())))
+                .toList();
+
+        String startCursor = edges.isEmpty() ? null : edges.get(0).cursor();
+        String endCursor = edges.isEmpty() ? null : edges.get(edges.size() - 1).cursor();
+        boolean hasNextPage = endIndex < allBooks.size();
+        boolean hasPreviousPage = startIndex > 0;
+
+        return new BooksConnection(
+                edges,
+                new BooksConnection.PageInfo(hasNextPage, hasPreviousPage, startCursor, endCursor));
+    }
 }

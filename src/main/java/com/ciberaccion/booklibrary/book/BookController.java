@@ -66,4 +66,13 @@ public class BookController {
                         book -> book,
                         Book::getGenre));
     }
+
+    @QueryMapping
+    public BooksConnection booksConnection(
+            @Argument Integer first,
+            @Argument String after,
+            @Argument Integer last,
+            @Argument String before) {
+        return bookService.findWithCursor(first, after, last, before);
+    }
 }
