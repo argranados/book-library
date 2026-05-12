@@ -9,6 +9,7 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.BatchMapping;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
 import com.ciberaccion.booklibrary.author.Author;
@@ -37,11 +38,13 @@ public class BookController {
         return bookService.findByGenreId(genreId);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public Book createBook(@Argument CreateBookInput input) {
         return bookService.create(input);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @MutationMapping
     public boolean deleteBook(@Argument Long id) {
         return bookService.delete(id);

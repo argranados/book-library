@@ -73,6 +73,8 @@ type Mutation {
     createAuthor(input: CreateAuthorInput!): Author!
     createGenre(input: CreateGenreInput!): Genre!
     deleteBook(id: ID!): Boolean!
+    register(input: RegisterInput!): AuthPayload!   # ← nuevo
+    login(input: LoginInput!): AuthPayload!         # ← nuevo
 }
 
 # Agrega este input al final del archivo
@@ -99,4 +101,21 @@ type PageInfo {
 type BooksConnection {
     edges: [BookEdge!]!
     pageInfo: PageInfo!
+}
+
+# ---- AUTH TYPES ----
+
+type AuthPayload {
+    token: String!
+    username: String!
+}
+
+input RegisterInput {
+    username: String!
+    password: String!
+}
+
+input LoginInput {
+    username: String!
+    password: String!
 }
